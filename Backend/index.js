@@ -22,19 +22,20 @@ const PORT = process.env.PORT || 4000;
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   console.log(username, password);
-  const userDoc = await User.findOne({ username });
-  if (userDoc) {
-    console.log("Username Exists");
-    jwt.sign({ username, id: userDoc._id }, secretKey, {}, (err, token) => {
-      if (err) throw err;
-      res.cookie("token", token).json({
-        id: userDoc._id,
-        username,
-      });
-    });
-  } else {
-    res.status(400).json("Wrong Username/Password");
-  }
+  res.json({ data: { user: "test" }, token: "123" });
+  // const userDoc = await User.findOne({ username });
+  // if (userDoc) {
+  //   console.log("Username Exists");
+  //   jwt.sign({ username, id: userDoc._id }, secretKey, {}, (err, token) => {
+  //     if (err) throw err;
+  //     res.cookie("token", token).json({
+  //       id: userDoc._id,
+  //       username,
+  //     });
+  //   });
+  // } else {
+  //   res.status(400).json("Wrong Username/Password");
+  // }
 });
 
 app.post("/addEmployee", async (req, res) => {
@@ -57,21 +58,21 @@ app.get("/getEmployees", async (req, res) => {
   }
 });
 
-app.get('/getEmployee/:id', async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const employee = await Employee.findById(id);
-      if (!employee) {
-        return res.status(404).json({ error: 'Employee not found' });
-      }
-  
-      res.json(employee);
-    } catch (error) {
-      console.error('Error fetching employee:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+app.get("/getEmployee/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({ error: "Employee not found" });
     }
-  });
+
+    res.json(employee);
+  } catch (error) {
+    console.error("Error fetching employee:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 app.post("/updateEmployee/:id", async (req, res) => {
   const { id } = req.params;
